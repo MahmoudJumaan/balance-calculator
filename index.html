@@ -3,88 +3,157 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>حاسبة السعرات الحرارية - Balance</title>
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <title>KAIZEN | الحاسبة الذكية</title>
     <style>
+        /* استيراد الخطوط: Cairo للغة العربية، و Montserrat للشعار الإنجليزي */
+        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=Montserrat:wght@700;800&display=swap');
+
         :root {
-            --primary-green: #168653;
-            --dark-green: #106B42;
-            --elegant-pink: #D95783;
-            --light-pink: #FFF0F5;
-            --light-green: #EAF6EF;
-            --white: #FFFFFF;
-            --bg-gray: #F7F9F8;
-            --text-dark: #333333;
-            --text-muted: #666666;
-            --border-color: #E0E5E2;
+            /* الألوان الأساسية للواجهة المظلمة الاحترافية */
+            --bg-base: #0f1115;
+            --bg-surface: #1e2128;
+            --surface-border: #333842;
+            --text-main: #ffffff;
+            --text-muted: #9ca3af;
+            --error: #ef4444;
+            
+            /* لون افتراضي (أخضر لصفحة البداية) */
+            --primary: #10b981; 
+            --primary-hover: #059669;
+            --primary-glow: rgba(16, 185, 129, 0.3);
+        }
+
+        /* ثيم الرجل (أزرق واضح) */
+        body.theme-male {
+            --primary: #3b82f6;
+            --primary-hover: #2563eb;
+            --primary-glow: rgba(59, 130, 246, 0.3);
+        }
+
+        /* ثيم الأنثى (وردي/زهري واضح) */
+        body.theme-female {
+            --primary: #ec4899;
+            --primary-hover: #db2777;
+            --primary-glow: rgba(236, 72, 153, 0.3);
         }
 
         * {
-            box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: 'Tajawal', sans-serif;
+            box-sizing: border-box;
+            font-family: 'Cairo', sans-serif;
+            transition: all 0.3s ease;
         }
 
         body {
-            background-color: var(--bg-gray);
-            color: var(--text-dark);
-            line-height: 1.6;
-        }
-
-        header {
-            background-color: var(--white);
+            background-color: var(--bg-base);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
             padding: 20px;
-            text-align: center;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-            margin-bottom: 30px;
-        }
-
-        header img {
-            max-width: 180px;
-            height: auto;
-            margin-bottom: 10px;
-        }
-
-        header h1 {
-            color: var(--primary-green);
-            font-size: 1.5rem;
-            margin-bottom: 5px;
-        }
-
-        header p {
-            color: var(--elegant-pink);
-            font-weight: 500;
+            /* خلفية متدرجة خفيفة جداً لتوضيح الألوان */
+            background-image: radial-gradient(circle at 50% -20%, var(--primary-glow), transparent 60%);
         }
 
         .container {
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 0 20px 40px;
+            width: 100%;
+            max-width: 500px;
+            position: relative;
         }
 
+        /* الكارت الأساسي */
         .card {
-            background: var(--white);
-            border-radius: 12px;
-            padding: 25px;
-            margin-bottom: 25px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.03);
-            border-top: 4px solid var(--primary-green);
+            background-color: var(--bg-surface);
+            border: 1px solid var(--surface-border);
+            border-radius: 20px;
+            padding: 40px 30px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+            position: relative;
+            overflow: hidden;
         }
 
-        .card-pink {
-            border-top: 4px solid var(--elegant-pink);
+        /* لمسة جمالية في أعلى الكارت */
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background-color: var(--primary);
         }
 
-        .section-title {
-            color: var(--dark-green);
-            font-size: 1.3rem;
-            margin-bottom: 20px;
-            padding-bottom: 10px;
-            border-bottom: 2px solid var(--light-green);
+        /* الشعار بالإنجليزي */
+        .brand-name {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 32px;
+            font-weight: 800;
+            letter-spacing: 4px;
+            color: var(--text-main);
+            text-align: center;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+        }
+
+        .brand-subtitle {
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 14px;
+            margin-bottom: 30px;
+            font-weight: 600;
+        }
+
+        /* --- صفحة الترحيب (Landing Page) --- */
+        #landingPage {
+            text-align: center;
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .welcome-icon {
+            width: 80px;
+            height: 80px;
+            background: rgba(16, 185, 129, 0.1);
+            border-radius: 50%;
             display: flex;
             align-items: center;
-            gap: 10px;
+            justify-content: center;
+            margin: 0 auto 20px auto;
+            color: #10b981;
+        }
+
+        .welcome-text {
+            font-size: 18px;
+            line-height: 1.6;
+            margin-bottom: 30px;
+            color: #d1d5db;
+        }
+
+        /* زر البداية الأخضر */
+        .btn-green {
+            background-color: #10b981;
+            color: #ffffff;
+            border: none;
+            width: 100%;
+            padding: 18px;
+            font-size: 18px;
+            font-weight: 700;
+            border-radius: 12px;
+            cursor: pointer;
+            box-shadow: 0 8px 20px rgba(16, 185, 129, 0.3);
+            text-transform: uppercase;
+        }
+        .btn-green:hover {
+            background-color: #059669;
+            transform: translateY(-2px);
+        }
+
+        /* --- صفحة النموذج --- */
+        #formPage {
+            display: none;
+            animation: fadeIn 0.5s ease;
         }
 
         .form-group {
@@ -93,661 +162,572 @@
 
         label {
             display: block;
-            font-weight: 600;
-            margin-bottom: 8px;
-            color: var(--text-dark);
-        }
-
-        input[type="text"],
-        input[type="number"],
-        select,
-        textarea {
-            width: 100%;
-            padding: 12px 15px;
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            font-size: 1rem;
-            transition: all 0.3s ease;
-            background-color: #FAFAFA;
-        }
-
-        input:focus,
-        select:focus,
-        textarea:focus {
-            outline: none;
-            border-color: var(--primary-green);
-            background-color: var(--white);
-            box-shadow: 0 0 0 3px var(--light-green);
-        }
-
-        .grid-2 {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-        }
-
-        .radio-group, .checkbox-group {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 15px;
-        }
-
-        .radio-card, .checkbox-card {
-            position: relative;
-            flex: 1 1 calc(50% - 15px);
-        }
-
-        .checkbox-card {
-            flex: 1 1 calc(33.333% - 15px);
-        }
-
-        .radio-card input, .checkbox-card input {
-            position: absolute;
-            opacity: 0;
-            cursor: pointer;
-        }
-
-        .radio-label, .checkbox-label {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 12px;
-            background-color: var(--white);
-            border: 2px solid var(--border-color);
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 500;
-            transition: all 0.3s ease;
-            text-align: center;
-        }
-
-        .radio-card input:checked ~ .radio-label,
-        .checkbox-card input:checked ~ .checkbox-label {
-            border-color: var(--primary-green);
-            background-color: var(--light-green);
-            color: var(--dark-green);
-        }
-
-        .btn {
-            display: inline-block;
-            width: 100%;
-            padding: 16px;
-            background-color: var(--primary-green);
-            color: var(--white);
-            border: none;
-            border-radius: 8px;
-            font-size: 1.2rem;
+            font-size: 14px;
             font-weight: 700;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-            text-align: center;
-            text-decoration: none;
-        }
-
-        .btn:hover {
-            background-color: var(--dark-green);
-        }
-
-        .btn-whatsapp {
-            background-color: #25D366;
-            margin-top: 15px;
-        }
-
-        .btn-whatsapp:hover {
-            background-color: #128C7E;
-        }
-
-        .btn-secondary {
-            background-color: var(--white);
-            color: var(--primary-green);
-            border: 2px solid var(--primary-green);
-            margin-top: 10px;
-        }
-        
-        .btn-secondary:hover {
-            background-color: var(--light-green);
-        }
-
-        .results-section {
-            display: none;
-        }
-
-        .result-card {
-            background: var(--light-green);
-            border-radius: 12px;
-            padding: 20px;
-            text-align: center;
-            margin-bottom: 20px;
-            border: 1px solid rgba(22, 134, 83, 0.2);
-        }
-        
-        .result-card h3 {
-            color: var(--dark-green);
-            font-size: 1.1rem;
+            color: var(--text-main);
             margin-bottom: 10px;
         }
-        
-        .result-card .value {
-            font-size: 2.5rem;
-            font-weight: 800;
-            color: var(--primary-green);
-            direction: ltr;
-            display: inline-block;
-        }
 
-        .result-card .unit {
-            font-size: 1rem;
+        .label-unit {
+            font-weight: 400;
             color: var(--text-muted);
-            font-weight: 500;
+            font-size: 12px;
         }
 
-        .macros-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 15px;
-            margin-top: 20px;
+        /* أزرار اختيار الجنس */
+        .gender-toggle {
+            display: flex;
+            gap: 10px;
         }
 
-        .macro-box {
-            background: var(--white);
-            border-radius: 10px;
-            padding: 15px 10px;
-            text-align: center;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-            border-bottom: 4px solid var(--primary-green);
-        }
-
-        .macro-box:nth-child(2) {
-            border-bottom-color: var(--elegant-pink);
-        }
-        .macro-box:nth-child(3) {
-            border-bottom-color: #F5A623;
-        }
-
-        .macro-box .macro-name {
-            font-size: 0.9rem;
+        .gender-btn {
+            flex: 1;
+            background-color: #2a2e37;
+            border: 2px solid transparent;
+            color: var(--text-muted);
+            padding: 14px;
+            border-radius: 12px;
+            font-size: 16px;
             font-weight: 700;
-            color: var(--text-muted);
-            margin-bottom: 5px;
+            cursor: pointer;
         }
 
-        .macro-box .macro-value {
-            font-size: 1.4rem;
-            font-weight: 800;
-            color: var(--text-dark);
-            direction: ltr;
-        }
-
-        .disclaimer {
-            background-color: var(--light-pink);
-            border-right: 4px solid var(--elegant-pink);
-            padding: 15px;
-            border-radius: 8px 0 0 8px;
-            margin: 25px 0;
-            font-size: 0.9rem;
-            color: #8A1C3E;
-            font-weight: 500;
+        /* عند اختيار الرجل */
+        body.theme-male .gender-btn#btnMale.active {
+            background-color: rgba(59, 130, 246, 0.1);
+            border-color: var(--primary);
+            color: var(--primary);
         }
         
-        .alert-flag {
-            background-color: #FFF3CD;
-            border-right: 4px solid #FFC107;
-            padding: 15px;
-            border-radius: 8px 0 0 8px;
-            margin-bottom: 20px;
-            font-size: 0.95rem;
-            color: #856404;
+        /* عند اختيار الأنثى */
+        body.theme-female .gender-btn#btnFemale.active {
+            background-color: rgba(236, 72, 153, 0.1);
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        .input-row {
+            display: flex;
+            gap: 15px;
+        }
+
+        .input-box {
+            flex: 1;
+        }
+
+        input, select {
+            width: 100%;
+            background-color: #2a2e37;
+            border: 1px solid var(--surface-border);
+            color: #ffffff;
+            padding: 14px;
+            border-radius: 12px;
+            font-size: 16px;
             font-weight: 600;
-            display: none;
+            outline: none;
+            appearance: none;
+        }
+
+        input:focus, select:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px var(--primary-glow);
+        }
+
+        select {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/200%2Fsvg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%239ca3af' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: left 12px center;
+            background-size: 18px;
+            padding-left: 40px;
+        }
+
+        select option {
+            background-color: var(--bg-surface);
+            color: #fff;
+        }
+
+        /* الزر الرئيسي */
+        .btn-main {
+            background-color: var(--primary);
+            color: #ffffff;
+            border: none;
+            width: 100%;
+            padding: 16px;
+            font-size: 18px;
+            font-weight: 700;
+            border-radius: 12px;
+            cursor: pointer;
+            margin-top: 10px;
+            box-shadow: 0 8px 20px var(--primary-glow);
+        }
+
+        .btn-main:hover {
+            background-color: var(--primary-hover);
+            transform: translateY(-2px);
+        }
+
+        .btn-outline {
+            background-color: transparent;
+            border: 1px solid var(--surface-border);
+            color: var(--text-main);
+            box-shadow: none;
+            margin-top: 12px;
+        }
+        
+        .btn-outline:hover {
+            background-color: #2a2e37;
+            border-color: var(--text-muted);
         }
 
         .error-msg {
-            color: var(--elegant-pink);
-            font-size: 0.85rem;
-            margin-top: 5px;
+            color: var(--error);
+            font-size: 13px;
+            text-align: center;
+            margin-top: 10px;
             display: none;
+            font-weight: 600;
+            background: rgba(239, 68, 68, 0.1);
+            padding: 10px;
+            border-radius: 8px;
         }
 
-        @media (max-width: 600px) {
-            .grid-2 {
-                grid-template-columns: 1fr;
-            }
-            .checkbox-card {
-                flex: 1 1 100%;
-            }
-            .macros-grid {
-                grid-template-columns: 1fr;
-            }
+        /* --- صفحة النتائج --- */
+        #resultsPage {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        /* قسم مؤشر كتلة الجسم BMI */
+        .bmi-section {
+            background-color: #2a2e37;
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 25px;
+            text-align: center;
+            border: 1px solid var(--surface-border);
+        }
+
+        .bmi-title {
+            font-size: 14px;
+            color: var(--text-muted);
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .bmi-value-row {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .bmi-score {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 32px;
+            font-weight: 800;
+            color: #fff;
+        }
+
+        .bmi-badge {
+            padding: 6px 14px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 700;
+            color: #fff;
+        }
+
+        /* قسم السعرات */
+        .calories-section {
+            text-align: center;
+            margin-bottom: 30px;
         }
         
-        @media print {
-            .btn, .no-print {
-                display: none !important;
-            }
-            body {
-                background: white;
-            }
-            .card {
-                box-shadow: none;
-                border: 1px solid #ddd;
-            }
+        .calories-title {
+            font-size: 16px;
+            color: var(--primary);
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .calories-value {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 52px;
+            font-weight: 800;
+            color: #fff;
+            line-height: 1;
+        }
+
+        .calories-unit {
+            font-size: 18px;
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+
+        /* كروت الماكروز */
+        .macros-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-bottom: 30px;
+        }
+
+        .macro-card {
+            background-color: #2a2e37;
+            border: 1px solid var(--surface-border);
+            border-radius: 12px;
+            padding: 15px 10px;
+            text-align: center;
+        }
+
+        .macro-value {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 22px;
+            font-weight: 800;
+            color: #fff;
+            margin-bottom: 2px;
+        }
+
+        .macro-name {
+            font-size: 13px;
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+
+        /* إشعار النسخ */
+        .toast {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%) translateY(-20px);
+            background-color: var(--primary);
+            color: #fff;
+            padding: 12px 24px;
+            border-radius: 30px;
+            font-size: 15px;
+            font-weight: 700;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            z-index: 9999;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+        }
+
+        .toast.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
     </style>
 </head>
 <body>
 
-    <header>
-        <img src="Screenshot_٢٠٢٦١١١٣-١٦٠٥٢١_Instagram_2.jpg" alt="Balance Logo" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'150\' height=\'150\'><text x=\'50%\' y=\'50%\' dominant-baseline=\'middle\' text-anchor=\'middle\' font-size=\'24\' fill=\'%23168653\'>Balance</text></svg>'">
-        <h1>Balance – Clinical Dietitian</h1>
-        <p>د. مرام علي الخزان</p>
-    </header>
-
     <div class="container">
-        <form id="calcForm" onsubmit="event.preventDefault(); calculate();">
+        <!-- إشعار النسخ -->
+        <div class="toast" id="toastMsg">تم نسخ النتائج بنجاح! ✔️</div>
+
+        <div class="card">
             
-            <!-- Section A -->
-            <div class="card">
-                <div class="section-title">البيانات الشخصية</div>
+            <!-- 1. صفحة الترحيب (Landing Page) -->
+            <div id="landingPage">
+                <div class="brand-name">KAIZEN</div>
+                <div class="brand-subtitle">الحاسبة الذكية الدقيقة</div>
                 
-                <div class="form-group">
-                    <label>الاسم الكامل</label>
-                    <input type="text" id="fullName" required placeholder="أدخل اسمك الكامل">
+                <div class="welcome-icon">
+                    <svg viewBox="0 0 24 24" width="40" height="40" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M22 12h-4l-3 9L9 3l-3 9H2"></path>
+                    </svg>
                 </div>
+                
+                <p class="welcome-text">مرحباً بك في الأداة الاحترافية لمعرفة احتياجك الدقيق من السعرات الحرارية، توزيع الماكروز، ومؤشر كتلة الجسم (BMI).</p>
+                
+                <button class="btn-green" onclick="showForm()">احسب احتياجك اليومي</button>
+            </div>
+
+
+            <!-- 2. صفحة إدخال البيانات -->
+            <div id="formPage">
+                <div class="brand-name">KAIZEN</div>
+                <div class="brand-subtitle">أدخل بياناتك بدقة</div>
 
                 <div class="form-group">
                     <label>الجنس</label>
-                    <div class="radio-group">
-                        <label class="radio-card">
-                            <input type="radio" name="gender" value="male" required>
-                            <div class="radio-label">ذكر</div>
-                        </label>
-                        <label class="radio-card">
-                            <input type="radio" name="gender" value="female">
-                            <div class="radio-label">أنثى</div>
-                        </label>
+                    <div class="gender-toggle">
+                        <button type="button" class="gender-btn active" id="btnMale" onclick="setGender('male')">رجل</button>
+                        <button type="button" class="gender-btn" id="btnFemale" onclick="setGender('female')">أنثى</button>
                     </div>
                 </div>
 
-                <div class="grid-2">
-                    <div class="form-group">
-                        <label>العمر (بالسنوات)</label>
-                        <input type="number" id="age" min="15" max="100" required placeholder="مثال: 25">
-                        <div class="error-msg" id="ageErr">يرجى إدخال عمر صحيح.</div>
+                <div class="input-row form-group">
+                    <div class="input-box">
+                        <label>العمر <span class="label-unit">(سنة)</span></label>
+                        <input type="number" id="inpAge" placeholder="25" min="15" max="100">
                     </div>
-                    <div class="form-group">
-                        <label>الطول (بالسنتيمتر)</label>
-                        <input type="number" id="height" min="100" max="250" required placeholder="مثال: 170">
+                    <div class="input-box">
+                        <label>الوزن <span class="label-unit">(كجم)</span></label>
+                        <input type="number" id="inpWeight" placeholder="75" min="30" max="300">
                     </div>
-                    <div class="form-group">
-                        <label>الوزن الحالي (بالكيلوغرام)</label>
-                        <input type="number" id="weight" min="30" max="300" step="0.1" required placeholder="مثال: 70">
+                    <div class="input-box">
+                        <label>الطول <span class="label-unit">(سم)</span></label>
+                        <input type="number" id="inpHeight" placeholder="175" min="100" max="250">
                     </div>
                 </div>
-            </div>
 
-            <!-- Section B -->
-            <div class="card">
-                <div class="section-title">مستوى النشاط اليومي</div>
                 <div class="form-group">
-                    <select id="activity" required>
-                        <option value="" disabled selected>اختر مستوى نشاطك</option>
-                        <option value="1.2">خامل جداً (قليل أو معدوم النشاط الرياضي)</option>
-                        <option value="1.375">نشاط خفيف (تمرين 1-3 أيام في الأسبوع)</option>
-                        <option value="1.55">نشاط متوسط (تمرين 3-5 أيام في الأسبوع)</option>
-                        <option value="1.725">نشاط مرتفع (تمرين 6-7 أيام في الأسبوع)</option>
-                        <option value="1.9">نشاط مرتفع جداً (نشاط بدني مكثف أو عمل شاق)</option>
-                    </select>
-                </div>
-            </div>
-
-            <!-- Section C & D -->
-            <div class="card">
-                <div class="section-title">الهدف وأسباب الاستشارة</div>
-                
-                <div class="form-group">
-                    <label>الهدف الغذائي</label>
-                    <select id="goal" required>
-                        <option value="" disabled selected>اختر الهدف</option>
-                        <option value="0.85">خسارة الوزن (تنشيف)</option>
-                        <option value="1.00">المحافظة على الوزن</option>
-                        <option value="1.10">زيادة الوزن (تضخيم)</option>
+                    <label>مستوى النشاط اليومي</label>
+                    <select id="selActivity">
+                        <option value="1.2">خامل (بدون تمارين / عمل مكتبي)</option>
+                        <option value="1.375">نشاط خفيف (تمارين 1-3 أيام في الأسبوع)</option>
+                        <option value="1.55" selected>نشاط متوسط (تمارين 3-5 أيام في الأسبوع)</option>
+                        <option value="1.725">نشط جداً (تمارين 6-7 أيام في الأسبوع)</option>
+                        <option value="1.9">شديد النشاط (عمل بدني شاق / تمرين مرتين يومياً)</option>
                     </select>
                 </div>
 
                 <div class="form-group">
-                    <label>سبب الاستشارة (يمكن اختيار أكثر من سبب)</label>
-                    <div class="checkbox-group">
-                        <label class="checkbox-card"><input type="checkbox" name="reason" value="خسارة الوزن"><div class="checkbox-label">خسارة الوزن</div></label>
-                        <label class="checkbox-card"><input type="checkbox" name="reason" value="زيادة الوزن"><div class="checkbox-label">زيادة الوزن</div></label>
-                        <label class="checkbox-card"><input type="checkbox" name="reason" value="تنظيم التغذية"><div class="checkbox-label">تنظيم التغذية</div></label>
-                        <label class="checkbox-card"><input type="checkbox" name="reason" value="تحسين العادات الغذائية"><div class="checkbox-label">تحسين العادات</div></label>
-                        <label class="checkbox-card"><input type="checkbox" name="reason" value="تقييم الحالة الغذائية"><div class="checkbox-label">تقييم الحالة</div></label>
-                        <label class="checkbox-card"><input type="checkbox" name="reason" value="متابعة غذائية"><div class="checkbox-label">متابعة غذائية</div></label>
-                        <label class="checkbox-card"><input type="checkbox" name="reason" value="أسباب صحية"><div class="checkbox-label">أسباب صحية</div></label>
-                        <label class="checkbox-card"><input type="checkbox" name="reason" value="أخرى"><div class="checkbox-label">أخرى</div></label>
-                    </div>
+                    <label>هدفك</label>
+                    <select id="selGoal">
+                        <option value="lose">إنقاص الوزن والتنشيف</option>
+                        <option value="maintain" selected>المحافظة على الوزن الحالي</option>
+                        <option value="gain">زيادة الوزن والبناء العضلي</option>
+                    </select>
                 </div>
+
+                <div class="error-msg" id="errorMsg">الرجاء إدخال جميع الأرقام بشكل صحيح (العمر، الوزن، الطول).</div>
+
+                <button class="btn-main" onclick="calculate()">احسب النتائج الان</button>
             </div>
 
-            <!-- Section E -->
-            <div class="card card-pink">
-                <div class="section-title" style="color: var(--elegant-pink); border-color: var(--light-pink);">التاريخ الطبي (إلزامي)</div>
-                
-                <div class="form-group">
-                    <label>هل تعاني من أي أمراض أو حالات صحية؟</label>
-                    <div class="checkbox-group">
-                        <label class="checkbox-card"><input type="checkbox" name="medical" value="لا يوجد" onchange="handleNoneCheckbox(this)"><div class="checkbox-label">لا يوجد</div></label>
-                        <label class="checkbox-card"><input type="checkbox" name="medical" value="السكري"><div class="checkbox-label">السكري</div></label>
-                        <label class="checkbox-card"><input type="checkbox" name="medical" value="ارتفاع ضغط الدم"><div class="checkbox-label">ارتفاع ضغط الدم</div></label>
-                        <label class="checkbox-card"><input type="checkbox" name="medical" value="أمراض القلب"><div class="checkbox-label">أمراض القلب</div></label>
-                        <label class="checkbox-card"><input type="checkbox" name="medical" value="أمراض الغدة الدرقية"><div class="checkbox-label">أمراض الغدة الدرقية</div></label>
-                        <label class="checkbox-card"><input type="checkbox" name="medical" value="أمراض الكلى" class="flag-condition"><div class="checkbox-label">أمراض الكلى</div></label>
-                        <label class="checkbox-card"><input type="checkbox" name="medical" value="أمراض الجهاز الهضمي"><div class="checkbox-label">أمراض الجهاز الهضمي</div></label>
-                        <label class="checkbox-card"><input type="checkbox" name="medical" value="تكيس المبايض"><div class="checkbox-label">تكيس المبايض</div></label>
-                        <label class="checkbox-card"><input type="checkbox" name="medical" value="فقر الدم"><div class="checkbox-label">فقر الدم</div></label>
-                        <label class="checkbox-card"><input type="checkbox" name="medical" value="الحمل" class="flag-condition"><div class="checkbox-label">الحمل</div></label>
-                        <label class="checkbox-card"><input type="checkbox" name="medical" value="الرضاعة" class="flag-condition"><div class="checkbox-label">الرضاعة</div></label>
-                        <label class="checkbox-card"><input type="checkbox" name="medical" value="أمراض أخرى"><div class="checkbox-label">أمراض أخرى</div></label>
+
+            <!-- 3. صفحة النتائج -->
+            <div id="resultsPage">
+                <div class="brand-name">KAIZEN</div>
+                <div class="brand-subtitle">النتائج مخصصة لك</div>
+
+                <!-- مؤشر كتلة الجسم -->
+                <div class="bmi-section">
+                    <div class="bmi-title">مؤشر كتلة الجسم (BMI)</div>
+                    <div class="bmi-value-row">
+                        <div class="bmi-score" id="resBmiScore">0.0</div>
+                        <div class="bmi-badge" id="resBmiBadge">غير معروف</div>
                     </div>
                 </div>
 
-                <div class="grid-2">
-                    <div class="form-group">
-                        <label>الأدوية المستخدمة حالياً</label>
-                        <textarea id="medications" rows="2" placeholder="اذكر الأدوية إن وجدت..."></textarea>
-                    </div>
-                    <div class="form-group">
-                        <label>الحساسية الغذائية</label>
-                        <textarea id="allergies" rows="2" placeholder="مثال: حساسية حليب، قمح..."></textarea>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label>العمليات الجراحية السابقة</label>
-                    <textarea id="surgeries" rows="2" placeholder="اذكر العمليات السابقة إن وجدت..."></textarea>
-                </div>
-            </div>
-
-            <!-- Section F -->
-            <div class="card">
-                <div class="section-title">الأعراض وملاحظات إضافية</div>
-                <div class="form-group">
-                    <label>الأعراض الحالية (المشكلات الهضمية، الشهية، النوم، أي معلومات إضافية)</label>
-                    <textarea id="symptoms" rows="4" placeholder="يرجى كتابة أي تفاصيل تود إبلاغ الدكتورة بها..."></textarea>
-                </div>
-            </div>
-
-            <button type="submit" class="btn" id="calcBtn">احسب احتياجي الغذائي</button>
-
-        </form>
-
-        <!-- Results Dashboard -->
-        <div id="resultsSection" class="results-section mt-4">
-            
-            <div id="clinicalFlag" class="alert-flag">
-                ⚠️ تنبيه: تشير بياناتك إلى وجود حالة طبية خاصة (مثل أمراض الكلى، الحمل، الرضاعة). الأرقام أدناه تقديرية وتحتاج إلى تقييم فردي دقيق من قبل أخصائية التغذية لتعديلها بما يتناسب مع حالتك الصحية.
-            </div>
-
-            <div class="card" style="border-top-width: 6px;">
-                <div class="section-title" style="justify-content: center; font-size: 1.5rem;">لوحة النتائج الخاصة بك</div>
-                
-                <div class="result-card">
-                    <h3>إجمالي الاحتياج اليومي مع هدفك</h3>
-                    <div class="value" id="resTargetCal">0</div>
-                    <div class="unit">سعرة حرارية / يوم</div>
-                    <p style="margin-top:10px; color: var(--text-muted);" id="resGoalText"></p>
-                </div>
-
-                <div class="grid-2">
-                    <div class="card" style="margin-bottom: 0; box-shadow: none; border: 1px solid var(--border-color);">
-                        <h4 style="color: var(--dark-green); margin-bottom: 15px; text-align: center;">التقييم الأيضي</h4>
-                        <div style="display: flex; justify-content: space-between; margin-bottom: 10px; border-bottom: 1px dashed #ccc; padding-bottom: 5px;">
-                            <span>معدل الأيض الأساسي (BMR)</span>
-                            <span style="font-weight: bold; direction: ltr;" id="resBmr">0 kcal</span>
-                        </div>
-                        <div style="display: flex; justify-content: space-between; margin-bottom: 10px; border-bottom: 1px dashed #ccc; padding-bottom: 5px;">
-                            <span>الاحتياج مع النشاط (TDEE)</span>
-                            <span style="font-weight: bold; direction: ltr;" id="resTdee">0 kcal</span>
-                        </div>
-                        <div style="font-size: 0.8rem; color: var(--text-muted); text-align: center; margin-top: 10px;">
-                            BMR: معدل الأيض الأساسي.<br>TDEE: إجمالي الاحتياج اليومي مع النشاط.
-                        </div>
-                    </div>
-
-                    <div class="card" style="margin-bottom: 0; box-shadow: none; border: 1px solid var(--border-color);">
-                        <h4 style="color: var(--dark-green); margin-bottom: 15px; text-align: center;">مؤشر كتلة الجسم (BMI)</h4>
-                        <div style="text-align: center;">
-                            <div class="value" id="resBmi" style="font-size: 2rem; color: var(--elegant-pink); font-weight: bold;">0</div>
-                            <div id="resBmiClass" style="font-size: 1.2rem; font-weight: 700; margin-top: 5px;">-</div>
-                            <div style="font-size: 0.85rem; color: var(--text-muted); margin-top: 10px;">
-                                *مؤشر كتلة الجسم هو مؤشر فحص مبدئي ولا يُعد تشخيصاً مستقلاً.
-                            </div>
-                        </div>
+                <!-- السعرات الحرارية -->
+                <div class="calories-section">
+                    <div class="calories-title">الهدف اليومي من السعرات</div>
+                    <div>
+                        <span class="calories-value" id="resCalories">0</span>
+                        <span class="calories-unit">سُعرة</span>
                     </div>
                 </div>
 
-                <h4 style="color: var(--dark-green); margin-top: 25px; text-align: center;">تقدير المغذيات الكبرى (الماكروز) المبدئي</h4>
+                <!-- الماكروز -->
                 <div class="macros-grid">
-                    <div class="macro-box">
-                        <div class="macro-name">البروتين</div>
-                        <div class="macro-value" id="resProtein">0g</div>
+                    <div class="macro-card">
+                        <div class="macro-value"><span id="resProtein">0</span>g</div>
+                        <div class="macro-name">بروتين</div>
                     </div>
-                    <div class="macro-box">
-                        <div class="macro-name">الكربوهيدرات</div>
-                        <div class="macro-value" id="resCarbs">0g</div>
+                    <div class="macro-card">
+                        <div class="macro-value"><span id="resCarbs">0</span>g</div>
+                        <div class="macro-name">كاربوهيدرات</div>
                     </div>
-                    <div class="macro-box">
-                        <div class="macro-name">الدهون</div>
-                        <div class="macro-value" id="resFat">0g</div>
+                    <div class="macro-card">
+                        <div class="macro-value"><span id="resFats">0</span>g</div>
+                        <div class="macro-name">دهون</div>
                     </div>
                 </div>
 
-                <div class="disclaimer">
-                    النتائج تقديرية أولية لأغراض التقييم الغذائي، ولا تُعد تشخيصاً طبياً أو خطة علاجية. تخضع النتائج للمراجعة والتعديل من قبل أخصائية التغذية وفق الحالة الصحية والتاريخ المرضي.
-                </div>
-
-                <button class="btn btn-whatsapp" onclick="sendToWhatsApp()">
-                    <svg viewBox="0 0 24 24" width="24" height="24" style="vertical-align: middle; margin-left: 8px;" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
-                    إرسال النتائج للدكتورة عبر واتساب
+                <button class="btn-main" onclick="copyResults()">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 20px; height: 20px; vertical-align: middle; margin-left: 8px;">
+                        <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                    </svg>
+                    نسخ النتائج
                 </button>
-
-                <div class="grid-2 no-print">
-                    <button class="btn btn-secondary" onclick="window.print()">طباعة / حفظ PDF</button>
-                    <button class="btn btn-secondary" onclick="resetForm()">إعادة تعيين البيانات</button>
-                </div>
+                <button class="btn-main btn-outline" onclick="resetCalculator()">تعديل الحسبة</button>
             </div>
-        </div>
 
+        </div>
     </div>
 
     <script>
-        // Handle "None" checkbox in medical history
-        function handleNoneCheckbox(noneCb) {
-            const checkboxes = document.querySelectorAll('input[name="medical"]');
-            if(noneCb.checked) {
-                checkboxes.forEach(cb => {
-                    if(cb !== noneCb) {
-                        cb.checked = false;
-                        cb.disabled = true;
-                    }
-                });
+        let currentGender = 'male';
+        const MACRO_SPLIT = { protein: 0.30, carbs: 0.45, fats: 0.25 };
+
+        function showForm() {
+            document.getElementById('landingPage').style.display = 'none';
+            document.getElementById('formPage').style.display = 'block';
+            document.body.classList.add('theme-male');
+        }
+
+        function setGender(gender) {
+            currentGender = gender;
+            document.getElementById('btnMale').classList.remove('active');
+            document.getElementById('btnFemale').classList.remove('active');
+            
+            if (gender === 'male') {
+                document.getElementById('btnMale').classList.add('active');
+                document.body.classList.remove('theme-female');
+                document.body.classList.add('theme-male');
             } else {
-                checkboxes.forEach(cb => {
-                    cb.disabled = false;
-                });
+                document.getElementById('btnFemale').classList.add('active');
+                document.body.classList.remove('theme-male');
+                document.body.classList.add('theme-female');
             }
         }
 
-        // Main Calculation
         function calculate() {
-            // 1. Get Values
-            const name = document.getElementById('fullName').value.trim();
-            const gender = document.querySelector('input[name="gender"]:checked')?.value;
-            const age = parseFloat(document.getElementById('age').value);
-            const height = parseFloat(document.getElementById('height').value);
-            const weight = parseFloat(document.getElementById('weight').value);
-            const activity = parseFloat(document.getElementById('activity').value);
-            
-            const goalSelect = document.getElementById('goal');
-            const goalMult = parseFloat(goalSelect.value);
-            const goalText = goalSelect.options[goalSelect.selectedIndex].text;
+            const age = parseFloat(document.getElementById('inpAge').value);
+            const weight = parseFloat(document.getElementById('inpWeight').value);
+            const height = parseFloat(document.getElementById('inpHeight').value);
+            const activity = parseFloat(document.getElementById('selActivity').value);
+            const goal = document.getElementById('selGoal').value;
+            const errorMsg = document.getElementById('errorMsg');
 
-            // Validate
-            if(!name || !gender || isNaN(age) || isNaN(height) || isNaN(weight) || isNaN(activity) || isNaN(goalMult)) {
-                alert("يرجى تعبئة جميع الحقول المطلوبة بشكل صحيح.");
+            if (!age || !weight || !height || age <= 0 || weight <= 0 || height <= 0) {
+                errorMsg.style.display = 'block';
                 return;
             }
+            errorMsg.style.display = 'none';
 
-            // 2. EXACT Harris-Benedict Equations (CRITICAL)
-            let bmr = 0;
-            if (gender === 'male') {
-                bmr = 66.5 + (13.8 * weight) + (5 * height) - (6.78 * age);
-            } else {
-                bmr = 655 + (9.56 * weight) + (1.85 * height) - (4.68 * age);
-            }
-
-            // 3. TDEE
-            const tdee = bmr * activity;
-
-            // 4. Target Calories
-            const targetCalories = tdee * goalMult;
-
-            // 5. BMI Calculation
+            // BMI
             const heightInMeters = height / 100;
             const bmi = weight / (heightInMeters * heightInMeters);
-            let bmiClass = '';
+            
+            let bmiStatus = '';
             let bmiColor = '';
+
             if (bmi < 18.5) {
-                bmiClass = 'نقص الوزن';
-                bmiColor = '#3498db';
+                bmiStatus = 'نقص في الوزن';
+                bmiColor = '#f59e0b';
             } else if (bmi >= 18.5 && bmi <= 24.9) {
-                bmiClass = 'وزن طبيعي';
-                bmiColor = '#2ecc71';
+                bmiStatus = 'وزن طبيعي ومثالي';
+                bmiColor = '#10b981';
             } else if (bmi >= 25 && bmi <= 29.9) {
-                bmiClass = 'زيادة الوزن';
-                bmiColor = '#f39c12';
+                bmiStatus = 'زيادة في الوزن';
+                bmiColor = '#f97316';
             } else {
-                bmiClass = 'السمنة';
-                bmiColor = '#e74c3c';
+                bmiStatus = 'سمنة';
+                bmiColor = '#ef4444';
             }
 
-            // 6. Macros (Configurable logic)
-            // Protein: 1.6g per kg
-            const proteinGrams = 1.6 * weight;
-            const proteinCals = proteinGrams * 4;
-            
-            // Fat: 25% of Target Calories
-            const fatCals = targetCalories * 0.25;
-            const fatGrams = fatCals / 9;
+            document.getElementById('resBmiScore').innerText = bmi.toFixed(1);
+            const badge = document.getElementById('resBmiBadge');
+            badge.innerText = bmiStatus;
+            badge.style.backgroundColor = bmiColor;
 
-            // Carbs: Remaining Calories
-            const carbCals = targetCalories - proteinCals - fatCals;
-            const carbGrams = carbCals > 0 ? (carbCals / 4) : 0;
-
-            // Check for medical flags
-            let hasFlags = false;
-            document.querySelectorAll('.flag-condition:checked').forEach(() => {
-                hasFlags = true;
-            });
-
-            // Update UI Dashboard
-            document.getElementById('resTargetCal').innerText = Math.round(targetCalories);
-            document.getElementById('resGoalText').innerText = 'الهدف: ' + goalText;
-            
-            document.getElementById('resBmr').innerText = Math.round(bmr);
-            document.getElementById('resTdee').innerText = Math.round(tdee);
-            
-            document.getElementById('resBmi').innerText = bmi.toFixed(1);
-            const bmiClassEl = document.getElementById('resBmiClass');
-            bmiClassEl.innerText = bmiClass;
-            bmiClassEl.style.color = bmiColor;
-            
-            document.getElementById('resProtein').innerText = Math.round(proteinGrams) + 'g';
-            document.getElementById('resCarbs').innerText = Math.round(carbGrams) + 'g';
-            document.getElementById('resFat').innerText = Math.round(fatGrams) + 'g';
-
-            const flagDiv = document.getElementById('clinicalFlag');
-            flagDiv.style.display = hasFlags ? 'block' : 'none';
-
-            // Show Results & Scroll
-            const resultsSection = document.getElementById('resultsSection');
-            resultsSection.style.display = 'block';
-            resultsSection.scrollIntoView({ behavior: 'smooth' });
-
-            // Store data globally for WhatsApp
-            window.calcData = {
-                name, gender: gender === 'male' ? 'ذكر' : 'أنثى',
-                age, height, weight, activity, goalText,
-                bmr: Math.round(bmr), tdee: Math.round(tdee), target: Math.round(targetCalories),
-                bmi: bmi.toFixed(1), bmiClass,
-                protein: Math.round(proteinGrams), carbs: Math.round(carbGrams), fat: Math.round(fatGrams)
-            };
-        }
-
-        function getCheckedValues(name) {
-            return Array.from(document.querySelectorAll(`input[name="${name}"]:checked`)).map(cb => cb.value).join('، ') || 'لا يوجد';
-        }
-
-        function sendToWhatsApp() {
-            if(!window.calcData) return;
-            const d = window.calcData;
-            
-            const reasons = getCheckedValues('reason');
-            const medical = getCheckedValues('medical');
-            const meds = document.getElementById('medications').value.trim() || 'لا يوجد';
-            const allergies = document.getElementById('allergies').value.trim() || 'لا يوجد';
-            const surgeries = document.getElementById('surgeries').value.trim() || 'لا يوجد';
-            const symptoms = document.getElementById('symptoms').value.trim() || 'لا يوجد';
-
-            let actText = document.getElementById('activity');
-            actText = actText.options[actText.selectedIndex].text.split('(')[0].trim();
-
-            const msg = `
-*تقرير التقييم الغذائي المبدئي*
------------------------------
-*البيانات الشخصية*
-الاسم: ${d.name}
-الجنس: ${d.gender}
-العمر: ${d.age} سنة
-الطول: ${d.height} سم
-الوزن: ${d.weight} كجم
-مستوى النشاط: ${actText}
------------------------------
-*الهدف وأسباب الاستشارة*
-الهدف الغذائي: ${d.goalText}
-أسباب الاستشارة: ${reasons}
------------------------------
-*المعلومات الطبية*
-الحالة الصحية: ${medical}
-الأدوية الحالية: ${meds}
-الحساسية الغذائية: ${allergies}
-العمليات الجراحية: ${surgeries}
-الأعراض الإضافية: ${symptoms}
------------------------------
-*النتائج الحسابية (تقديرية)*
-- معدل الأيض الأساسي (BMR): ${d.bmr} سعرة
-- الاحتياج اليومي (TDEE): ${d.tdee} سعرة
-- مؤشر كتلة الجسم (BMI): ${d.bmi} (${d.bmiClass})
-- *السعرات المستهدفة: ${d.target} سعرة*
------------------------------
-*تقدير الماكروز المبدئي*
-البروتين: ${d.protein} جرام
-الكربوهيدرات: ${d.carbs} جرام
-الدهون: ${d.fat} جرام
------------------------------
-(الرسالة مرسلة من حاسبة Balance - Clinical Dietitian)
-            `.trim();
-
-            const url = `https://wa.me/967784898867?text=${encodeURIComponent(msg)}`;
-            window.open(url, '_blank');
-        }
-
-        function resetForm() {
-            if(confirm('هل أنت متأكد من رغبتك في مسح جميع البيانات؟')) {
-                document.getElementById('calcForm').reset();
-                document.getElementById('resultsSection').style.display = 'none';
-                handleNoneCheckbox(document.querySelector('input[name="medical"][value="لا يوجد"]'));
-                window.scrollTo({ top: 0, behavior: 'smooth' });
+            // BMR & Calories
+            let bmr;
+            if (currentGender === 'male') {
+                bmr = (10 * weight) + (6.25 * height) - (5 * age) + 5;
+            } else {
+                bmr = (10 * weight) + (6.25 * height) - (5 * age) - 161;
             }
+
+            let tdee = bmr * activity;
+            let targetCalories = tdee;
+
+            if (goal === 'lose') {
+                targetCalories -= 500;
+            } else if (goal === 'gain') {
+                targetCalories += 500;
+            }
+
+            if (currentGender === 'male' && targetCalories < 1500) targetCalories = 1500;
+            if (currentGender === 'female' && targetCalories < 1200) targetCalories = 1200;
+
+            targetCalories = Math.round(targetCalories);
+
+            // Macros
+            const proteinGrams = Math.round((targetCalories * MACRO_SPLIT.protein) / 4);
+            const carbsGrams = Math.round((targetCalories * MACRO_SPLIT.carbs) / 4);
+            const fatsGrams = Math.round((targetCalories * MACRO_SPLIT.fats) / 9);
+
+            document.getElementById('resCalories').innerText = targetCalories.toLocaleString('en-US');
+            document.getElementById('resProtein').innerText = proteinGrams;
+            document.getElementById('resCarbs').innerText = carbsGrams;
+            document.getElementById('resFats').innerText = fatsGrams;
+
+            document.getElementById('formPage').style.display = 'none';
+            document.getElementById('resultsPage').style.display = 'block';
+        }
+
+        // دالة النسخ المحسنة والقوية جداً (تعمل في كل المتصفحات وحتى لو كان الملف مفتوح محلياً)
+        function copyResults() {
+            const bmiScore = document.getElementById('resBmiScore').innerText;
+            const bmiBadge = document.getElementById('resBmiBadge').innerText;
+            const calories = document.getElementById('resCalories').innerText.replace(',', '');
+            const protein = document.getElementById('resProtein').innerText;
+            const carbs = document.getElementById('resCarbs').innerText;
+            const fats = document.getElementById('resFats').innerText;
+
+            const copyText = `النتائج من حاسبة KAIZEN 📊\n\n` +
+                             `⚖️ مؤشر كتلة الجسم (BMI): ${bmiScore} - ${bmiBadge}\n` +
+                             `🔥 السعرات اليومية: ${calories} سعرة\n\n` +
+                             `الماكروز:\n` +
+                             `🥩 بروتين: ${protein} جرام\n` +
+                             `🍚 كارب: ${carbs} جرام\n` +
+                             `🥑 دهون: ${fats} جرام`;
+
+            // الطريقة الحديثة (إذا كان الموقع مرفوع على سيرفر آمن HTTPS)
+            if (navigator.clipboard && window.isSecureContext) {
+                navigator.clipboard.writeText(copyText).then(() => {
+                    showToast();
+                }).catch(err => {
+                    // في حال فشلت الطريقة الحديثة، نستخدم الطريقة البديلة
+                    fallbackCopyTextToClipboard(copyText);
+                });
+            } else {
+                // الطريقة البديلة (القوية) التي تعمل إذا كنت تفتح الملف من الكمبيوتر مباشرة (file://)
+                fallbackCopyTextToClipboard(copyText);
+            }
+        }
+
+        // الطريقة البديلة لضمان عمل النسخ في كل الحالات
+        function fallbackCopyTextToClipboard(text) {
+            const textArea = document.createElement("textarea");
+            textArea.value = text;
+            
+            // تجنب ظهور المربع أو تمرير الشاشة للأسفل
+            textArea.style.top = "0";
+            textArea.style.left = "0";
+            textArea.style.position = "fixed";
+            textArea.style.opacity = "0";
+
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+
+            try {
+                const successful = document.execCommand('copy');
+                if(successful) {
+                    showToast();
+                } else {
+                    alert("عذراً، فشل النسخ التلقائي. يرجى التحديد والنسخ يدوياً.");
+                }
+            } catch (err) {
+                alert("عذراً، المتصفح لديك يمنع النسخ التلقائي.");
+            }
+
+            document.body.removeChild(textArea);
+        }
+
+        function showToast() {
+            const toast = document.getElementById('toastMsg');
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        function resetCalculator() {
+            document.getElementById('resultsPage').style.display = 'none';
+            document.getElementById('formPage').style.display = 'block';
         }
     </script>
 </body>
